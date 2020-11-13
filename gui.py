@@ -74,25 +74,26 @@ def run():
             start = str(e1.get())
             if start in [router.name for router in ROUTERS]:
                 print("True")
+                t = Text(outputs, height=(len(g.router_list) - 1),
+                         width=50, bg="grey")
+                t.grid(row=0, column=0, sticky="nsew")
+
                 for router in ROUTERS:
                     if router.name == start:
                         start = router
 
                 path, cost, info = router.print_routing_table()
-
-                label_head = Label(outputs, justify='left', text="{:<8}{:<8} {:<10} {:<10} {:<10}".format(
-                    "pos", "from", "to", "cost", "path"))
-                label_head.grid(row=0, column=0)
-                widgets.append(label_head)
+                head = "{:<8}{:<8} {:<10} {:<10} {:<10}\n".format(
+                    "pos", "from", "to", "cost", "path")
+                t.insert(END, head)
                 row_i = 1
                 col_i = 0
                 for k, v in info.items():
                     From, to, cost, path = v
-                    label = Label(outputs, justify="left", text="{:<8}{:<8} {:<10} {:<10} {:<10}".format(
+                    t.insert(END, "{:<8}{:<8} {:<10} {:<10} {:<10}\n".format(
                         k, From, to, cost, path))
-                    label.grid(row=0, column=col_i)
-                    row_i += 1
-                    widget.append(label)
+
+                widgets.append(t)
 
             else:
                 label = Label(outputs, justify='left',
@@ -120,9 +121,9 @@ def run():
     inputs.columnconfigure(0, weight=1)
 
     # output frame
-    outputs = LabelFrame(master, text="Output", padx=5, pady=5)
+    outputs = LabelFrame(master, text="Output", padx=0, pady=0)
     outputs.grid(row=1, column=0, padx=10, pady=10,
-                 sticky=E+W+N+S, columnspan=4)
+                 sticky=E+W+N+S, columnspan=1)
     outputs.rowconfigure(0, weight=1)
     outputs.columnconfigure(0, weight=1)
 

@@ -23,6 +23,7 @@ class Router:
                 path, cost = self.graph.shortest_path(self.name, routers)
                 info[pos] = [self.name, routers, cost, "->".join(path)]
             pos += 1
+
         return path, cost, info
         print("{:<8}{:<8} {:<10} {:<10} {:<10}".format(
             "pos", "from", "to", "cost", "path"))
@@ -162,9 +163,9 @@ if __name__ == "__main__":
     graph.add_router("e", "f", 9)
 
     router = Router("a", graph)
-    router.get_path("b")
+    # router.get_path("b")
     router.print_routing_table()
-    print(graph.router_list)
-    graph.remove_router("c")
-    print(graph.router_list)
-    router.print_routing_table()
+    # print(graph.router_list)
+    # graph.remove_router("c")
+    # print(graph.router_list)
+    # router.print_routing_table()
