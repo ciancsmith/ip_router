@@ -75,7 +75,7 @@ def run():
             if start in [router.name for router in ROUTERS]:
                 print("True")
                 t = Text(outputs, height=(len(g.router_list) - 1),
-                         width=50, bg="grey")
+                         width=50, bg="lightgrey")
                 t.grid(row=0, column=0, sticky="nsew")
 
                 for router in ROUTERS:
@@ -99,7 +99,7 @@ def run():
                 label = Label(outputs, justify='left',
                               text="Router object for {} does not exist create one and try again".format(start))
 
-            label.grid(row=0, column=0)
+                label.grid(row=0, column=0)
             widgets.append(label)
 
     def display_help():
