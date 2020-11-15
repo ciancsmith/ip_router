@@ -2,6 +2,8 @@ from pqdict import PQDict
 
 
 class Router:
+    """Router class that implements a node like model for a graph object"""
+
     def __init__(self, name, graph):
         self.name = name
         self.graph = graph
@@ -23,8 +25,6 @@ class Router:
                 path, cost = self.graph.shortest_path(self.name, routers)
                 info[pos] = [self.name, routers, cost, "->".join(path)]
             pos += 1
-
-        return path, cost, info
         print("{:<8}{:<8} {:<10} {:<10} {:<10}".format(
             "pos", "from", "to", "cost", "path"))
         for k, v in info.items():
@@ -32,10 +32,13 @@ class Router:
             print("{:<8}{:<8} {:<10} {:<10} {:<10}".format(
                 k, From, to, cost, path))
 
+        return path, cost, info
+
 
 class Graph(object):
 
     def __init__(self, adjacency_list=dict(), edge_weights=dict()):
+        """Initialises graph object"""
         self.router_list = adjacency_list
         self.router_cost = edge_weights
 
@@ -50,6 +53,7 @@ class Graph(object):
         self.router_list[router_b][router_a] = cost
 
     def remove_router(self, router):
+        """Removes router provided from the graph object """
         copy_list = self.router_list.copy()
         temp_dict = {}
         for k, v in copy_list.items():
@@ -64,8 +68,6 @@ class Graph(object):
                         temp_dict[k][k2] = v2
 
         self.router_list = temp_dict
-
-        # print(list(copy_routers_list))
 
     def get_router_cost(self, router_a, router_b):
         """ Get router cost of edge between router_a and router_b. """
@@ -84,61 +86,38 @@ class Graph(object):
         return self.router_list
 
     def dijkstra(self, src, dst):
-        '''
-        dijkstra's algorithm determines the length from `start` to every other 
-        vertex in the graph.
-        The graph argument `G` should be a dict indexed by nodes.  The value 
-        of each item `G[v]` should also a dict indexed by successor nodes.
-        In other words, for any node `v`, `G[v]` is itself a dict, indexed 
-        by the successors of `v`.  For any directed edge `v -> w`, `G[v][w]` 
-        is the length of the edge from `v` to `w`.
-            graph = {'a': {'b': 1}, 
-                    'b': {'c': 2, 'b': 5}, 
-                    'c': {'d': 1},
-                    'd': {}}
-        Returns two dicts, `dist` and `pred`:
-            dist, pred = dijkstra(graph, start='a') 
-
-        `dist` is a dict mapping each node to its shortest distance from the
-            specified starting node:
-            assert dist == {'a': 0, 'c': 3, 'b': 1, 'd': 4}
-        `pred` is a dict mapping each node to its predecessor node on the
-        shortest path from the specified starting node:
-            assert pred == {'b': 'a', 'c': 'b', 'd': 'c'}
-
-        '''
+        """dijkstras algorithm used to calculate the shortest path between two nodes a Priority queue is used in this implementation"""
         inf = float('inf')
-        D = {src: 0}          # mapping of nodes to their dist from start
-        Q = PQDict(D)           # priority queue for tracking min shortest path
-        P = {}                  # mapping of nodes to their direct predecessors
-        U = set(self.router_list)       # unexplored nodes
+        D = {src: 0}
+        Q = PQDict(D)
+        P = {}
+        U = set(self.router_list)
 
-        while U:                                    # nodes yet to explore
-            (v, d) = Q.popitem()  # node w/ min dist d on frontier
-            D[v] = d                                # est dijkstra greedy score
-            U.remove(v)                   # remove from unexplored
+        while U:
+            (v, d) = Q.popitem()
+            D[v] = d
+            U.remove(v)
             if str(v) == dst:
                 break
 
-            # now consider the edges from v with an unexplored head -
-            # we may need to update the dist of unexplored successors
-            # successors to v
             for w in self.router_list[v]:
-                if w in U:                          # then w is a frontier node
-                    # dgs: dist of start -> v -> w
+                if w in U:
+
                     d = D[v] + self.router_list[v][w]
                     if d < Q.get(w, inf):
-                        Q[w] = d                    # set/update dgs
-                        P[w] = v                    # set/update predecessor
+                        Q[w] = d
+                        P[w] = v
 
         return D, P
 
     def get_cost(self, dist, goal):
+        """get the cost hgelper function for shortest path"""
         for routers in dist.keys():
             if routers == goal:
                 return dist[routers]
 
     def shortest_path(self, start, end):
+        """uses dijkstras algorithim to find the shortest path"""
         dist, pred = self.dijkstra(start, end)
         v = end
         path = [v]
@@ -163,9 +142,9 @@ if __name__ == "__main__":
     graph.add_router("e", "f", 9)
 
     router = Router("a", graph)
-    # router.get_path("b")
+    router.get_path("b")
     router.print_routing_table()
-    # print(graph.router_list)
-    # graph.remove_router("c")
-    # print(graph.router_list)
-    # router.print_routing_table()
+    print(graph.router_list)
+    graph.remove_router("c")
+    print(graph.router_list)
+    router.print_routing_table()
